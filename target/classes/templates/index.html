@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Barcos y Contenedores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Gestión de Barcos</h1>
+        
+        <!-- Mostrar mensaje de error -->
+        <div th:if="${errorMessage}" class="d-none" id="errorMessage" th:text="${errorMessage}"></div>
+        
+        <!-- Formulario para agregar/modificar barco -->
+        <form th:action="@{/barcos/save}" th:object="${barco}" method="post" class="mb-4" id="barcoForm">
+            <input type="hidden" th:field="*{id}">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" th:field="*{nombre}" class="form-control" placeholder="Nombre" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" th:field="*{origen}" class="form-control" placeholder="Origen" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" th:field="*{destino}" class="form-control" placeholder="Destino" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" th:field="*{capacidad}" class="form-control" placeholder="Capacidad" required>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Tabla de barcos -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Origen</th>
+                    <th>Destino</th>
+                    <th>Capacidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="barco : ${barcos}">
+                    <td th:text="${barco.id}"></td>
+                    <td th:text="${barco.nombre}"></td>
+                    <td th:text="${barco.origen}"></td>
+                    <td th:text="${barco.destino}"></td>
+                    <td th:text="${barco.capacidad}"></td>
+                    <td>
+                        <a th:href="@{/barcos/edit/{id}(id=${barco.id})}" class="btn btn-sm btn-warning me-1">Editar</a>
+                        <button class="btn btn-sm btn-danger me-1" th:attr="data-id=${barco.id}" onclick="confirmDeleteBarco(this)">Eliminar</button>
+                        <button class="btn btn-sm btn-info" th:data-nombre="${barco.nombre}" th:attr="data-id=${barco.id}" onclick="showContenedores(this)">Ver Contenedores</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Formulario para contenedores -->
+        <div id="contenedorSection" style="display: none;">
+            <h2>Contenedores del Barco <span id="barcoNombre"></span></h2>
+            <form th:action="@{/contenedores/save}" th:object="${contenedor}" method="post" class="mb-4" id="contenedorForm">
+
+                <input type="hidden" th:field="*{id}" id="contenedorId">
+                <input type="hidden" th:field="*{barco.id}" id="barcoId">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" th:field="*{vin}" class="form-control" placeholder="VIN" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="date" th:field="*{fecha}" class="form-control" required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Guardar Contenedor</button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Tabla de contenedores -->
+            <table class="table table-bordered" id="contenedoresTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>VIN</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="contenedoresBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/scripts.js"></script>
+</body>
+</html>

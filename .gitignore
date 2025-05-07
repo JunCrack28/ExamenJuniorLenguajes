@@ -1,0 +1,19 @@
+Maven
+
+target/ *.log .classpath .project .settings/ .factorypath
+
+Docker
+
+*.tar.gz *.bak docker-compose.override.yml
+
+IDE
+
+.idea/ *.iml .vscode/
+
+Sistema operativo
+
+.DS_Store Thumbs.db
+
+Otros
+
+*.swp *.swo
